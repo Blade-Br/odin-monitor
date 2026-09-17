@@ -31,11 +31,13 @@ from Coletores.sistema import (
 # DADOS ESTÁTICOS
 # ==========================================
 
-def organizar_dados_estaticos():
+def organizar_dados_estaticos(maquina_id: str):
 
     sistema = coletar_sistema_estatico()
 
     return {
+
+        "maquina_id": maquina_id,
 
         "identificacao": {
             "hostname": sistema["hostname"],
@@ -64,9 +66,11 @@ def organizar_dados_estaticos():
 # DADOS VOLÁTEIS
 # ==========================================
 
-def organizar_dados_volateis():
+def organizar_dados_volateis(maquina_id: str):
 
     return {
+
+        "maquina_id": maquina_id,
 
         "timestamp": coletar_timestamp(),
 

@@ -1,7 +1,7 @@
 import psutil
 import platform
 import socket
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 # ==============================
@@ -38,7 +38,9 @@ def coletar_uptime():
 
 def coletar_timestamp():
 
-    return datetime.now().isoformat()
+    # O contrato do Odin Server exige uma data/hora com fuso horário.
+    # UTC evita ambiguidade entre máquinas monitoradas em fusos diferentes.
+    return datetime.now(timezone.utc).isoformat()
 
 
 # ==============================
