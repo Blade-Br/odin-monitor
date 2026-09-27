@@ -1,4 +1,5 @@
 import psutil
+from cpuinfo import get_cpu_info
 
 # ==============================
 # INFORMAÇÕES ESTÁTICAS
@@ -6,7 +7,13 @@ import psutil
 
 def coletar_cpu_estatica():
 
+    informacoes_cpu = get_cpu_info()
+
     return {
+        "modelo": (
+            informacoes_cpu.get("brand_raw")
+            or informacoes_cpu.get("brand")
+        ),
         "nucleos_fisicos": psutil.cpu_count(logical=False),
         "nucleos_logicos": psutil.cpu_count(logical=True)
     }
