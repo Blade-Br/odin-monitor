@@ -53,7 +53,7 @@ def coletar_disco_estatico():
 
             discos.append({
                 "nome": particao.mountpoint,
-                "tipo": coletar_tipo_disco(particao.mountpoint),
+                "tipo": coletar_tipo_disco(particao.mountpoint) or "N/A",
                 "capacidade_total_gb": round(
                     uso.total / (1024 ** 3), 2
                 )

@@ -13,6 +13,7 @@ def coletar_cpu_estatica():
         "modelo": (
             informacoes_cpu.get("brand_raw")
             or informacoes_cpu.get("brand")
+            or "N/A"
         ),
         "nucleos_fisicos": psutil.cpu_count(logical=False),
         "nucleos_logicos": psutil.cpu_count(logical=True)
