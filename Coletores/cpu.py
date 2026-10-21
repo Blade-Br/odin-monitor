@@ -1,20 +1,28 @@
+import subprocess
 import psutil
-from cpuinfo import get_cpu_info
 
-# ==============================
-# INFORMAÇÕES ESTÁTICAS
-# ==============================
+
+def obter_modelo_cpu():
+
+    resultado = subprocess.run(
+        [
+            "powershell",
+            "-NoProfile",
+            "-Command",
+            "(Get-CimInstance Win32_Processor).Name"
+        ],
+        capture_output=True,
+        text=True,
+        creationflags=subprocess.CREATE_NO_WINDOW
+    )
+
+    return resultado.stdout.strip() or "N/A"
+
 
 def coletar_cpu_estatica():
 
-    informacoes_cpu = get_cpu_info()
-
     return {
-        "modelo": (
-            informacoes_cpu.get("brand_raw")
-            or informacoes_cpu.get("brand")
-            or "N/A"
-        ),
+        "modelo": obter_modelo_cpu(),
         "nucleos_fisicos": psutil.cpu_count(logical=False),
         "nucleos_logicos": psutil.cpu_count(logical=True)
     }

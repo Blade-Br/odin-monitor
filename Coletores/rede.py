@@ -2,6 +2,9 @@ import psutil
 import socket
 import time
 import subprocess
+from urllib.parse import urlparse
+
+from config import API_BASE_URL, API_LATENCIA_TIMEOUT_SEGUNDOS
 
 
 # ==============================
@@ -104,6 +107,31 @@ def coletar_taxa_rede():
     }
 
 
+def medir_latencia_servidor():
+    """Mede em ms o tempo para abrir TCP com o host/porta da API OdinServer."""
+    try:
+        destino = urlparse(API_BASE_URL)
+        host = destino.hostname
+        porta = destino.port or (443 if destino.scheme == "https" else 80)
+    except ValueError:
+        return None, False
+    if not host:
+        return None, False
+
+    inicio = time.perf_counter()
+    try:
+        with socket.create_connection(
+            (host, porta),
+            timeout=API_LATENCIA_TIMEOUT_SEGUNDOS,
+        ):
+            pass
+    except (OSError, ValueError):
+        return None, False
+
+    latencia_ms = (time.perf_counter() - inicio) * 1000
+    return round(latencia_ms, 2), True
+
+
 # ==============================
 # INFORMAÇÕES VOLÁTEIS
 # ==============================
@@ -111,6 +139,7 @@ def coletar_taxa_rede():
 def coletar_rede_volatil():
 
     conectado = verificar_conexao()
+    latencia_servidor_ms, servidor_alcancavel = medir_latencia_servidor()
 
     # Caso não exista conexão com a internet
     if not conectado:
@@ -120,7 +149,9 @@ def coletar_rede_volatil():
             "nome_rede": None,
             "ipv4": None,
             "download_mb_s": 0,
-            "upload_mb_s": 0
+            "upload_mb_s": 0,
+            "latencia_servidor_ms": latencia_servidor_ms,
+            "servidor_alcancavel": servidor_alcancavel,
         }
 
     taxas = coletar_taxa_rede()
@@ -134,7 +165,9 @@ def coletar_rede_volatil():
 
         "download_mb_s": taxas["download_mb_s"],
 
-        "upload_mb_s": taxas["upload_mb_s"]
+        "upload_mb_s": taxas["upload_mb_s"],
+        "latencia_servidor_ms": latencia_servidor_ms,
+        "servidor_alcancavel": servidor_alcancavel,
     }
 
 

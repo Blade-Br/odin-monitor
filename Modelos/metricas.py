@@ -33,34 +33,44 @@ from Coletores.sistema import (
 
 def organizar_dados_estaticos(maquina_id: str):
 
+    print("4.1 Iniciando coleta do sistema...", flush=True)
     sistema = coletar_sistema_estatico()
+    print("4.2 Coleta do sistema concluída.", flush=True)
+
+    print("4.3 Coletando CPU...", flush=True)
+    cpu = coletar_cpu_estatica()
+    print("4.4 CPU concluída.", flush=True)
+
+    print("4.5 Coletando memória física...", flush=True)
+    memoria_fisica = coletar_memoria_fisica_estatica()
+    print("4.6 Memória física concluída.", flush=True)
+
+    print("4.7 Coletando memória virtual...", flush=True)
+    memoria_virtual = coletar_memoria_virtual_estatica()
+    print("4.8 Memória virtual concluída.", flush=True)
+
+    print("4.9 Coletando discos...", flush=True)
+    discos = coletar_disco_estatico()
+    print("4.10 Discos concluídos.", flush=True)
 
     return {
-
         "maquina_id": maquina_id,
 
         "identificacao": {
             "hostname": sistema["hostname"],
-            "sistema_operacional": sistema[
-                "sistema_operacional"
-            ],
+            "sistema_operacional": sistema["sistema_operacional"],
             "versao": sistema["versao"]
         },
 
-        "cpu": coletar_cpu_estatica(),
+        "cpu": cpu,
 
         "memoria": {
-
-            "memoria_fisica":
-                coletar_memoria_fisica_estatica(),
-
-            "memoria_virtual":
-                coletar_memoria_virtual_estatica()
+            "memoria_fisica": memoria_fisica,
+            "memoria_virtual": memoria_virtual
         },
 
-        "discos": coletar_disco_estatico()
+        "discos": discos
     }
-
 
 # ==========================================
 # DADOS VOLÁTEIS
